@@ -3,11 +3,12 @@ const PACKAGES = {
         title: "트렌드 신조어",
         description: "요즘 유행하는 인싸 용어 모음집",
         badge: "EASY",
+        image: 'img/bg_trend.jpeg',
         config: {
-            baseSpeed: 1.0,
+            baseSpeed: 0.7, // Reduced from 1.0
             scoreScale: 1.0,
             longTextThreshold: 6,
-            spawnInterval: 1500
+            spawnInterval: 2000 // Increased from 1500 (Slower spawn)
         },
         data: [
             { word: "국룰", desc: "국민 룰 (보편적 규칙)" },
@@ -85,11 +86,12 @@ const PACKAGES = {
         title: "김성모 명대사",
         description: "남자의 세계, 그 깊은 철학을 타이핑하라",
         badge: "HARD",
+        image: 'img/bg_kimsungmo.jpeg',
         config: {
-            baseSpeed: 0.15, // Reduced from 0.5 (3x slower)
+            baseSpeed: 0.5,
             scoreScale: 3.0,
             longTextThreshold: 10,
-            spawnInterval: 12000 // Increased from 4000 (1/3 density)
+            spawnInterval: 12000
         },
         data: [
             { word: "더 이상의 자세한 설명은 생략한다", desc: "[대털] 교강용이 적외선 굴절기를 설명하다 지면 관계상 끊으며 나온 전설의 지문" },
@@ -198,12 +200,13 @@ const PACKAGES = {
         title: "실전 아파트 청약",
         description: "10자부터 100자까지 길어지는 아파트 이름 정복",
         badge: "HELL",
+        image: 'img/bg_apt.jpeg',
         config: {
-            baseSpeed: 0.5, // Increased from 0.2 to prevent pile-up
-            scoreScale: 10.0, // Massive points
+            baseSpeed: 0.5,
+            scoreScale: 10.0,
             longTextThreshold: 10,
-            spawnOrder: 'sequential', // New feature: Spawn in order 0->end
-            spawnInterval: 6000 // Very slow spawn
+            spawnOrder: 'sequential',
+            spawnInterval: 6000
         },
         data: [
             { word: "판교펜트하우스신타워", desc: "10자 (난이도: 하)" },

@@ -6,7 +6,7 @@ body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background-color: #050011;
+    /* background-color: #050011;  Removed to show #game-bg */
     font-family: 'Do Hyeon', sans-serif;
     color: #fff;
 }
@@ -98,42 +98,78 @@ body {
 }
 
 .stage-card {
-    background: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Darker for better contrast */
+    background-size: cover;
+    background-position: center;
     border: 2px solid #00ffff;
     padding: 20px;
     width: 250px;
+    height: 300px;
+    /* Fixed height for consistency */
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
     box-shadow: 0 0 10px #00ffff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Text at bottom */
+}
+
+/* Dark overlay for readability */
+.stage-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3));
+    z-index: 1;
+}
+
+.stage-badge,
+.stage-card h3,
+.stage-card p {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .stage-card:hover {
     transform: scale(1.05);
-    background: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px #00ffff;
+    border-color: #ff00de;
+    box-shadow: 0 0 20px #ff00de;
 }
 
-.stage-card h3 {
-    color: #ffeb3b;
-    margin-bottom: 10px;
-    font-family: 'Black Han Sans', sans-serif;
-}
-
-.stage-card p {
-    font-size: 0.9rem;
-    color: #ddd;
-    margin-bottom: 0;
+/* Global Background Dimming */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    /* Darken bg image */
+    z-index: -1;
+    pointer-events: none;
 }
 
 .stage-badge {
     display: inline-block;
+    align-self: center;
     background: #ff00de;
     color: #fff;
     font-size: 0.8rem;
     padding: 2px 8px;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: auto;
+    /* Push to top */
+    margin-top: 10px;
 }
 
 /* --- Gameplay Elements --- */
@@ -288,7 +324,7 @@ body {
     justify-content: center;
     text-align: center;
     white-space: nowrap;
-    animation: fadeOut 1.2s forwards;
+    animation: fadeOut 3.6s forwards;
     z-index: 20;
 }
 
@@ -399,4 +435,103 @@ body {
         width: 95%;
         /* Use almost full width on mobile */
     }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    10% {
+        transform: translateX(-10px) rotate(-5deg);
+    }
+
+    20% {
+        transform: translateX(10px) rotate(5deg);
+    }
+
+    30% {
+        transform: translateX(-10px) rotate(-5deg);
+    }
+
+    40% {
+        transform: translateX(10px) rotate(5deg);
+    }
+
+    50% {
+        transform: translateX(-10px) rotate(-5deg);
+    }
+
+    60% {
+        transform: translateX(10px) rotate(5deg);
+    }
+
+    70% {
+        transform: translateX(-10px) rotate(-5deg);
+    }
+
+    80% {
+        transform: translateX(10px) rotate(5deg);
+    }
+
+    90% {
+        transform: translateX(-5px) rotate(0);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.shake-anim {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+    box-shadow: 0 0 30px #ff0000 !important;
+    border-color: #ff0000 !important;
+}
+
+@keyframes flashGreen {
+    0% {
+        background-color: rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 30px #00ff00;
+        border-color: #00ff00;
+    }
+
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+        border-color: #00ffff;
+    }
+}
+
+.success-anim {
+    animation: flashGreen 0.2s ease-out;
+}
+
+/* Background Layer */
+#game-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px) brightness(0.7);
+    /* Blur and dim */
+    transition: background-image 0.5s ease-in-out;
+}
+
+#level-up-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #00ffff;
+    font-size: 5rem;
+    z-index: 1000;
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #fff;
+    animation: popScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate;
 }
