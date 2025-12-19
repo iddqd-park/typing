@@ -1,76 +1,5 @@
-const WORDS = [
-    { word: "국룰", desc: "국민 룰 (보편적 규칙)" },
-    { word: "오마카세", desc: "주방장 특선 요리" },
-    { word: "수제", desc: "손으로 직접 만듦" },
-    { word: "오픈런", desc: "개점 전 대기 질주" },
-    { word: "호캉스", desc: "호텔 배캉스" },
-    { word: "소확행", desc: "소소하지만 확실한 행복" },
-    { word: "꿀팁", desc: "유용한 정보" },
-    { word: "성지순례", desc: "인기 장소 방문" },
-    { word: "인생샷", desc: "인생 최고의 사진" },
-    { word: "챌린지", desc: "도전 및 참여 유행" },
-    { word: "한정판", desc: "제한된 수량 판매" },
-    { word: "콜라보", desc: "브랜드간 협업" },
-    { word: "인생템", desc: "인생 최고의 아이템" },
-    { word: "럭셔리", desc: "호화로운 사치" },
-    { word: "감성", desc: "분위기 있는 느낌" },
-    { word: "핫플", desc: "핫 플레이스 (인기 장소)" },
-    { word: "팝업", desc: "단기간 운영 매장" },
-    { word: "바디프로필", desc: "운동 후 몸매 사진" },
-    { word: "글램핑", desc: "화려한 캠핑" },
-    { word: "오운완", desc: "오늘 운동 완료" },
-    { word: "브이로그", desc: "비디오+블로그 일상" },
-    { word: "벼락거지", desc: "자산 격차 상대적 박탈감" },
-    { word: "어메니티", desc: "호텔 편의 용품" },
-    { word: "돈쭐", desc: "돈으로 혼내주기 (구매 응원)" },
-    { word: "꾸안꾸", desc: "꾸민 듯 안 꾸민 듯" },
-    { word: "내돈내산", desc: "내 돈 주고 내가 산" },
-    { word: "뷰맛집", desc: "경치가 좋은 곳" },
-    { word: "영앤리치", desc: "젊고 부유함" },
-    { word: "스몰웨딩", desc: "소규모 결혼식" },
-    { word: "브라이덜샤워", desc: "신부 파티" },
-    { word: "태교여행", desc: "출산 전 여행" },
-    { word: "하객룩", desc: "결혼식 하객 복장" },
-    { word: "얼죽아", desc: "얼어 죽어도 아이스 아메리카노" },
-    { word: "먹킷리스트", desc: "맛집 버킷리스트" },
-    { word: "하차감", desc: "차에서 내릴 때의 시선" },
-    { word: "스몰럭셔리", desc: "작은 사치품" },
-    { word: "초품아", desc: "초등학교를 품은 아파트" },
-    { word: "영끌", desc: "영혼까지 끌어모아 대출" },
-    { word: "갓생", desc: "부지런하고 모범적인 삶" },
-    { word: "왓츠인마이백", desc: "가방 속 소지품 공개" },
-    { word: "가심비", desc: "가격 대비 심리적 만족" },
-    { word: "워라밸", desc: "일과 삶의 균형" },
-    { word: "상급지", desc: "부동산 상위 입지" },
-    { word: "불멍", desc: "불 보며 멍때리기" },
-    { word: "경리단길", desc: "이태원 명소 거리" },
-    { word: "망리단길", desc: "망원동 거리" },
-    { word: "송리단길", desc: "송파구 거리" },
-    { word: "황리단길", desc: "경주 명소 거리" },
-    { word: "행리단길", desc: "수원 행궁동 거리" },
-    { word: "골린이", desc: "골프 초보" },
-    { word: "주린이", desc: "주식 초보" },
-    { word: "헬린이", desc: "헬스 초보" },
-    { word: "캠린이", desc: "캠핑 초보" },
-    { word: "홈마카세", desc: "집에서 즐기는 오마카세" },
-    { word: "한우카세", desc: "한우 코스 요리" },
-    { word: "이모카세", desc: "이모님 맘대로 안주" },
-    { word: "스세권", desc: "스타벅스 인근" },
-    { word: "붕세권", desc: "붕어빵 인근" },
-    { word: "숲세권", desc: "숲 인근" },
-    { word: "학세권", desc: "학원/학교 인근" },
-    { word: "몰세권", desc: "쇼핑몰 인근" },
-    { word: "이모슐랭", desc: "이모님 손맛 맛집" },
-    { word: "돈슐랭", desc: "돈까스 맛집" },
-    { word: "면슐랭", desc: "면요리 맛집" },
-    { word: "빵슐랭", desc: "맛있는 빵집" },
-    { word: "빵지순례", desc: "유명 빵집 순례" },
-    { word: "반려식물", desc: "애착을 갖고 기르는 식물" },
-    { word: "반려돌", desc: "애완 돌멩이" },
-    { word: "반려가전", desc: "애착 가전제품" }
-];
-
 const Game = {
+    currentPackage: null,
     activeWords: [],
     score: 0,
     combo: 0,
@@ -81,11 +10,14 @@ const Game = {
     fallSpeedBase: 1.0,
     lastTime: 0,
     containerHeight: 0,
+    containerWidth: 0,
     audioCtx: null,
+    nextSpawnIndex: 0,
 
     init: function () {
         this.cacheDOM();
         this.bindEvents();
+        this.renderStageList();
         this.resize();
         window.addEventListener('resize', () => this.resize());
     },
@@ -98,15 +30,62 @@ const Game = {
         this.$comboCount = $('#combo-count');
         this.$finalScore = $('#final-score');
         this.$resultComment = $('#result-comment');
+
+        this.$stageSelectScreen = $('#stage-select-screen');
+        this.$stageList = $('#stage-list');
+
         this.$startScreen = $('#start-screen');
+        this.$selectedTitle = $('#selected-stage-title');
+        this.$selectedDesc = $('#selected-stage-desc');
+
         this.$gameOverScreen = $('#game-over-screen');
+        this.$stageName = $('#stage-name');
+    },
+
+    renderStageList: function () {
+        this.$stageList.empty();
+        Object.keys(PACKAGES).forEach(key => {
+            const pkg = PACKAGES[key];
+            const $card = $(`
+                <div class="stage-card" data-key="${key}">
+                    <div class="stage-badge">${pkg.badge}</div>
+                    <h3>${pkg.title}</h3>
+                    <p>${pkg.description}</p>
+                </div>
+            `);
+            $card.on('click', () => this.selectStage(key));
+            this.$stageList.append($card);
+        });
+    },
+
+    selectStage: function (key) {
+        this.currentPackage = PACKAGES[key];
+
+        this.$stageSelectScreen.addClass('d-none').removeClass('d-flex');
+        this.$startScreen.removeClass('d-none').addClass('d-flex');
+
+        this.$selectedTitle.text(this.currentPackage.title);
+        this.$selectedDesc.text(this.currentPackage.description);
+        this.$stageName.text(this.currentPackage.title);
+
+        this.fallSpeedBase = this.currentPackage.config.baseSpeed;
     },
 
     bindEvents: function () {
         $('#btn-start').on('click', () => this.startGame());
+        $('#btn-back').on('click', () => {
+            this.$startScreen.addClass('d-none').removeClass('d-flex');
+            this.$stageSelectScreen.removeClass('d-none').addClass('d-flex');
+        });
+
         $('#btn-restart').on('click', () => {
             this.$gameOverScreen.removeClass('d-flex').addClass('d-none');
             this.startGame();
+        });
+
+        $('#btn-home').on('click', () => {
+            this.$gameOverScreen.removeClass('d-flex').addClass('d-none');
+            this.$stageSelectScreen.removeClass('d-none').addClass('d-flex');
         });
 
         this.$input.on('input', (e) => this.checkInput(this.$input.val().trim()));
@@ -127,6 +106,7 @@ const Game = {
 
     resize: function () {
         this.containerHeight = this.$container.height();
+        this.containerWidth = this.$container.width();
     },
 
     initAudio: function () {
@@ -160,8 +140,11 @@ const Game = {
         this.$startScreen.addClass('d-none').removeClass('d-flex');
         this.$input.val('').focus();
 
-        this.spawnRate = 2000;
-        this.fallSpeedBase = 1.0;
+        // Load initial spawn rate from config, default to 2000
+        this.spawnRate = this.currentPackage.config.spawnInterval || 2000;
+        this.fallSpeedBase = this.currentPackage.config.baseSpeed;
+        this.nextSpawnIndex = 0;
+
         this.lastTime = performance.now();
         this.startLoops();
     },
@@ -170,8 +153,19 @@ const Game = {
         const spawnParams = () => {
             if (!this.isPlaying) return;
             this.spawnWord();
-            if (this.spawnRate > 400) this.spawnRate -= 30; // Faster ramp up
-            if (this.fallSpeedBase < 6.0) this.fallSpeedBase += 0.03;
+
+            // Difficulty Progression: Speed up falling, reduce spawn time
+            // Cap minimum spawn rate based on initial density (don't get too dense for long text)
+            let minRate = 400;
+            if ((this.currentPackage.config.spawnInterval || 2000) > 3000) {
+                 minRate = 2000; // Keep heavy text packages relatively sparse
+            }
+
+            if (this.spawnRate > minRate) this.spawnRate -= 20;
+            
+            // Accelerate falling speed
+            if (this.fallSpeedBase < 8.0) this.fallSpeedBase += 0.05;
+
             this.spawnTimer = setTimeout(spawnParams, this.spawnRate);
         };
         spawnParams();
@@ -187,66 +181,212 @@ const Game = {
     },
 
     spawnWord: function () {
-        const wordObj = WORDS[Math.floor(Math.random() * WORDS.length)];
-        const xPos = 5 + Math.random() * 80;
+        const dataArr = this.currentPackage.data;
+        let wordObj;
+
+        if (this.currentPackage.config.spawnOrder === 'sequential') {
+            if (this.nextSpawnIndex >= dataArr.length) {
+                this.nextSpawnIndex = 0;
+            }
+            wordObj = dataArr[this.nextSpawnIndex];
+            this.nextSpawnIndex++;
+        } else {
+            wordObj = dataArr[Math.floor(Math.random() * dataArr.length)];
+        }
+
+        let xPos;
+        if (wordObj.word.length > 30) {
+            // Very long: small variance around center
+            xPos = 40 + Math.random() * 20; // 40% ~ 60%
+        } else if (wordObj.word.length > 20) {
+            // Long: medium variance
+            xPos = 30 + Math.random() * 40; // 30% ~ 70%
+        } else {
+            // Normal
+            xPos = 10 + Math.random() * 80; // 10% ~ 90%
+        }
+
         const $el = $('<div>')
             .addClass('word-entity')
             .text(wordObj.word)
-            .css({ left: xPos + '%', top: '-50px' });
+            .css({ left: xPos + '%', top: '-100px' }); // Start above screen
+
+        if (wordObj.word.length > 30) {
+            $el.addClass('very-long-text');
+        } else if (wordObj.word.length > 10) {
+            $el.addClass('long-text');
+        }
+
         this.$container.append($el);
+
+        // --- Calculate Dimension for Physics ---
+        // Force Reflow to get width? Or estimate?
+        // Let's assume browser renders it. 
+        // Note: 'transform: translateX(-50%)' is used in CSS.
+        // So actual Left edge is xPos% - width/2.
+
+        const pxWidth = $el.outerWidth();
+        const pxHeight = $el.outerHeight();
+        const widthPercent = (pxWidth / this.containerWidth) * 100;
+        const heightPercent = (pxHeight / this.containerHeight) * 100;
+
+        // Store entity
         this.activeWords.push({
             id: Date.now() + Math.random(),
             word: wordObj.word,
             desc: wordObj.desc,
             element: $el,
-            x: xPos,
-            y: -50,
-            speed: this.fallSpeedBase * (0.9 + Math.random() * 0.4)
+            x: xPos, // This is center X in % because of translateX(-50%)
+            y: -20, // Initial Y percent (approx)
+            yPx: -100, // Actual px for logic
+            width: widthPercent,
+            height: heightPercent,
+            pxWidth: pxWidth,
+            pxHeight: pxHeight,
+            speed: this.fallSpeedBase * (0.9 + Math.random() * 0.2)
         });
+    },
+
+    // --- Physics Engine ---
+    resolveCollisions: function () {
+        if (this.activeWords.length < 2) return;
+
+        // Update pixel positions first (Center X/Y)
+        this.activeWords.forEach(w => {
+            w.centerX = (w.x / 100) * this.containerWidth;
+            w.centerY = w.yPx + (w.pxHeight / 2);
+        });
+
+        for (let i = 0; i < this.activeWords.length; i++) {
+            for (let j = i + 1; j < this.activeWords.length; j++) {
+                const a = this.activeWords[i];
+                const b = this.activeWords[j];
+
+                // Box A
+                const aLeft = a.centerX - (a.pxWidth / 2);
+                const aRight = a.centerX + (a.pxWidth / 2);
+                const aTop = a.yPx;
+                const aBottom = a.yPx + a.pxHeight;
+
+                // Box B
+                const bLeft = b.centerX - (b.pxWidth / 2);
+                const bRight = b.centerX + (b.pxWidth / 2);
+                const bTop = b.yPx;
+                const bBottom = b.yPx + b.pxHeight;
+
+                // Check overlap
+                const overlapX = Math.min(aRight, bRight) - Math.max(aLeft, bLeft);
+                const overlapY = Math.min(aBottom, bBottom) - Math.max(aTop, bTop);
+
+                if (overlapX > 0 && overlapY > 0) {
+                    // Collision!
+                    // Determine push vector
+                    let dx = b.centerX - a.centerX;
+                    let dy = b.centerY - a.centerY;
+
+                    // Normalize
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist === 0) { dx = 0; dy = 1; dist = 1; }
+
+                    const ndx = dx / dist;
+                    const ndy = dy / dist;
+
+                    const pushStrength = 3.0;
+
+                    // Apple Force
+                    const xPushPct = ((ndx * pushStrength) / this.containerWidth) * 100;
+                    a.x -= xPushPct;
+                    b.x += xPushPct;
+
+                    const yPush = ndy * pushStrength;
+
+                    a.yPx -= yPush;
+                    b.yPx += yPush;
+                }
+            }
+        }
     },
 
     update: function (delta) {
         const factor = delta / 16.0;
+
+        // 1. Move Y
         for (let i = this.activeWords.length - 1; i >= 0; i--) {
             let entity = this.activeWords[i];
-            entity.y += entity.speed * factor;
-            entity.element.css('top', entity.y + 'px');
-            if (entity.y > this.containerHeight) this.gameOver();
+
+            // Convert speed to pixels roughly
+            // 60FPS: speed is pixels/frame approx? No, speed * factor.
+            // Let's assume speed is pixels/frame for now logic or adjust.
+            // Previous logic: 'top' += speed * factor.
+            // entity.y was pixels.
+
+            entity.yPx += entity.speed * factor;
+
+            if (entity.yPx > this.containerHeight) {
+                this.gameOver();
+                return;
+            }
+        }
+
+        // 2. Resolve Collisions (Update X)
+        this.resolveCollisions();
+
+        // 3. Render & Boundary Check
+        for (let i = 0; i < this.activeWords.length; i++) {
+            let entity = this.activeWords[i];
+
+            // Boundary Constraint (0 to 100%)
+            // Since x is Center %, we need to ensure edges stay in.
+            const halfWidthPct = (entity.pxWidth / 2 / this.containerWidth) * 100;
+
+            if (entity.x < halfWidthPct) entity.x = halfWidthPct;
+            if (entity.x > 100 - halfWidthPct) entity.x = 100 - halfWidthPct;
+
+            entity.element.css({
+                'top': entity.yPx + 'px',
+                'left': entity.x + '%'
+            });
         }
     },
 
     checkInput: function (val) {
         if (!val) return;
-        const index = this.activeWords.findIndex(w => w.word === val);
+        const cleanInput = val.replace(/\s+/g, '');
+        const index = this.activeWords.findIndex(w => w.word.replace(/\s+/g, '') === cleanInput);
         if (index !== -1) {
             this.destroyWord(index);
             this.$input.val('');
         }
     },
 
-    checkMatch: function (val) { return this.activeWords.some(w => w.word === val); },
+    checkMatch: function (val) {
+        const cleanInput = val.replace(/\s+/g, '');
+        return this.activeWords.some(w => w.word.replace(/\s+/g, '') === cleanInput);
+    },
 
     destroyWord: function (index) {
         const entity = this.activeWords[index];
-        this.createExplosion(entity.x, entity.y, entity);
-        this.spawnParticles(entity.x, entity.y); // VFX
+        this.createExplosion(entity.x, entity.yPx, entity); // Use yPx for explosion
+        this.spawnParticles(entity.x, entity.yPx);
         entity.element.remove();
         this.activeWords.splice(index, 1);
 
         this.combo++;
-        this.score += 10 + (this.combo * 2); // Combo bonus
+
+        const base = 10;
+        const scale = this.currentPackage.config.scoreScale;
+        const lengthBonus = Math.max(1, entity.word.length * 0.5);
+        const points = Math.floor((base * scale * lengthBonus) + (this.combo * 5));
+
+        this.score += points;
         this.updateScore();
         this.updateCombo();
 
-        // Satisfying SFX
-        this.playBeep(400 + (this.combo * 50), 'square', 0.1); // Pitch rises with combo
+        this.playBeep(400 + (Math.min(this.combo, 20) * 50), 'square', 0.1);
     },
 
     resetCombo: function () {
-        if (this.combo > 5) {
-            // Combo break sound
-            this.playBeep(150, 'sawtooth', 0.3);
-        }
+        if (this.combo > 5) this.playBeep(150, 'sawtooth', 0.3);
         this.combo = 0;
         this.updateCombo();
     },
@@ -266,41 +406,35 @@ const Game = {
 
     createExplosion: function (x, y, entity) {
         const $exp = $('<div>').addClass('explosion').css({ left: x + '%', top: y + 'px' });
-        $exp.append($('<div>').addClass('exp-word').text(entity.word));
+
+        let wordClass = 'exp-word';
+        if (entity.word.length > 20) wordClass += ' fs-6';
+        else if (entity.word.length > 8) wordClass += ' fs-3';
+
+        $exp.append($('<div>').addClass(wordClass).text(entity.word));
         $exp.append($('<div>').addClass('exp-desc').text(entity.desc));
         this.$container.append($exp);
         setTimeout(() => $exp.remove(), 1200);
     },
 
     spawnParticles: function (xPercent, yPx) {
-        // Convert % to px for particle origin (rough approx)
         const xPx = (xPercent / 100) * this.$container.width();
-
         for (let i = 0; i < 15; i++) {
             const angle = Math.random() * Math.PI * 2;
             const velocity = 2 + Math.random() * 4;
-            const tx = Math.cos(angle) * 50 * velocity;
-            const ty = Math.sin(angle) * 50 * velocity;
-
-            const $p = $('<div>').addClass('particle').css({
-                left: xPx + 'px',
-                top: yPx + 'px',
-                background: Math.random() > 0.5 ? '#00ffff' : '#ff00ff' // Neon colors
-            });
-
-            this.$container.append($p);
-
-            // Animate using Web Animations API or CSS transition
-            $p.animate({
-                left: `+=${tx}px`,
-                top: `+=${ty}px`,
+            $('<div class="particle"></div>').css({
+                left: xPx + 'px', top: yPx + 'px',
+                background: Math.random() > 0.5 ? '#00ffff' : '#ff00ff'
+            }).appendTo(this.$container).animate({
+                left: `+=${Math.cos(angle) * 50 * velocity}px`,
+                top: `+=${Math.sin(angle) * 50 * velocity}px`,
                 opacity: 0
             }, 600, 'linear', function () { $(this).remove(); });
         }
     },
 
     shakeInput: function () {
-        this.$input.parent().addClass('shake-anim'); // Add shake to wrapper usually
+        this.$input.parent().addClass('shake-anim');
         this.$input.addClass('bg-danger');
         setTimeout(() => {
             this.$input.removeClass('bg-danger');
@@ -317,11 +451,9 @@ const Game = {
 
         this.$finalScore.text(this.score.toLocaleString());
 
-        // Witty comment
-        let comment = "아직... 트렌드를 모르시네요.";
-        if (this.score > 2000) comment = "인싸의 자질이 보입니다.";
-        if (this.score > 5000) comment = "혹시... SNS 중독?";
-        if (this.score > 10000) comment = "트렌드 그 자체이시군요!";
+        let comment = "더 노력하십시오.";
+        if (this.score > 5000) comment = "훌륭한 키보드 워리어!";
+        if (this.score > 20000) comment = "당신은 이미 전설입니다.";
 
         this.$resultComment.text(comment);
         this.$gameOverScreen.removeClass('d-none').addClass('d-flex');
@@ -330,6 +462,4 @@ const Game = {
     }
 };
 
-$(document).ready(() => {
-    Game.init();
-});
+$(document).ready(() => Game.init());
