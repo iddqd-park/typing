@@ -13,6 +13,8 @@ const Game = {
     containerWidth: 0,
     audioCtx: null,
     nextSpawnIndex: 0,
+    bgm: null, // BGM Object
+    isBgmOn: true, // Default ON
 
     init: function () {
         this.cacheDOM();
@@ -63,6 +65,7 @@ const Game = {
 
     selectStage: function (key) {
         this.currentPackage = PACKAGES[key];
+        // Audio init defered to startGame or user interaction if needed, but we keep it lazy
 
         this.$stageSelectScreen.addClass('d-none').removeClass('d-flex');
         this.$startScreen.removeClass('d-none').addClass('d-flex');
@@ -100,16 +103,20 @@ const Game = {
 
         // Input Handling - Enforce Enter Key
         this.$input.off('keydown').on('keydown', (e) => {
+            // Ignore IME composition events
+            if (e.originalEvent.isComposing || e.isComposing) return;
+
             if (e.key === 'Enter') {
                 const val = this.$input.val();
-                if (val.trim()) { // Only check if not empty
+                if (val.trim()) {
                     this.checkInput(val);
                 }
-                // Do NOT clear here, checkInput handles it
             } else if (e.key === 'Escape') {
                 this.$input.val('');
             }
         });
+
+        $('#btn-bgm-toggle').off('click').on('click', () => this.toggleBGM());
     },
 
     resize: function () {
@@ -120,6 +127,41 @@ const Game = {
     initAudio: function () {
         if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+        this.initBGM();
+    },
+
+    initBGM: function () {
+        if (this.bgm) return;
+        this.bgm = new Audio('bgm/Slaughter Machine.mp3');
+        this.bgm.loop = true;
+        this.bgm.volume = 0.316; // -10dB
+    },
+
+    playBGM: function () {
+        if (this.bgm && this.isBgmOn) {
+            this.bgm.currentTime = 0;
+            this.bgm.play().catch(console.error);
+        }
+    },
+
+    stopBGM: function () {
+        if (this.bgm) {
+            this.bgm.pause();
+            this.bgm.currentTime = 0;
+        }
+    },
+
+    toggleBGM: function () {
+        this.isBgmOn = !this.isBgmOn;
+        const $btn = $('#btn-bgm-toggle');
+
+        if (this.isBgmOn) {
+            $btn.text('BGM: ON').removeClass('btn-outline-secondary').addClass('btn-outline-light');
+            if (this.isPlaying) this.bgm.play().catch(console.error);
+        } else {
+            $btn.text('BGM: OFF').addClass('btn-outline-secondary').removeClass('btn-outline-light');
+            this.bgm.pause();
+        }
     },
 
     playBeep: function (freq, type = 'sine', duration = 0.1) {
@@ -138,6 +180,7 @@ const Game = {
 
     startGame: function () {
         this.initAudio();
+        this.playBGM(); // Start BGM on Game Start
         this.isPlaying = true;
         this.isPaused = false;
         this.score = 0;
@@ -175,7 +218,11 @@ const Game = {
         setTimeout(() => this.playBeep(800, 'square', 0.1), 100);
         setTimeout(() => this.playBeep(1200, 'square', 0.4), 200);
 
-        const $levelUp = $('<div id="level-up-overlay" class="d-flex justify-content-center align-items-center neon-text-title arcade-font">LEVEL UP!</div>');
+        const nextLevel = this.level + 1;
+        const $levelUp = $(`<div id="level-up-overlay" class="d-flex flex-column justify-content-center align-items-center neon-text-title arcade-font">
+            <div>LEVEL UP!</div>
+            <div class="h2 mt-3 text-warning">LV. ${nextLevel}</div>
+        </div>`);
         $('body').append($levelUp);
 
         // Resume after 1s
@@ -538,6 +585,8 @@ const Game = {
         clearInterval(this.levelTimer);
         this.activeWords.forEach(w => w.element.remove());
         this.activeWords = [];
+
+        this.stopBGM(); // Stop BGM immediately
 
         this.$finalScore.text(this.score.toLocaleString());
 
