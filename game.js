@@ -27,6 +27,7 @@ const Game = {
     cacheDOM: function () {
         this.$container = $('#game-container');
         this.$input = $('#word-input');
+        this.$scoreBoard = $('#score-board');
         this.$score = $('#score');
         this.$comboDisplay = $('#combo-display');
         this.$comboCount = $('#combo-count');
@@ -191,6 +192,7 @@ const Game = {
         this.updateScore();
         this.updateCombo();
         this.$startScreen.addClass('d-none').removeClass('d-flex');
+        $('#score-board').show(); // Force Show HUD
         $('footer').addClass('d-none'); // Hide footer in game
         this.$input.val('').focus();
 
@@ -587,6 +589,7 @@ const Game = {
         this.activeWords = [];
 
         this.stopBGM(); // Stop BGM immediately
+        $('#score-board').hide(); // Force Hide HUD
 
         this.$finalScore.text(this.score.toLocaleString());
 
