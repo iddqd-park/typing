@@ -72,21 +72,61 @@
     </div>
 
     <!-- Game Over Screen -->
-    <div id="game-over-screen" class="screen-overlay d-none flex-column align-items-center py-5">
-        <h1 class="display-1 fw-bold mb-3 neon-text-red arcade-font">GAME OVER</h1>
+    <!-- Game Over / Certificate Screen -->
+    <div id="game-over-screen" class="screen-overlay d-none flex-column align-items-center justify-content-center py-5">
         
-        <div class="result-box mb-5 text-center">
-            <p class="h5 text-white-50 mb-2">FINAL SCORE</p>
-            <p class="display-4 neon-text-blue fw-bold" id="final-score">0</p>
-            <p class="h5 mt-5 text-warning" id="result-comment">...</p>
+        <!-- Certificate Card to be Captured -->
+        <div id="certificate-card" class="p-4 mb-4 text-center text-dark bg-light position-relative" style="width: 90%; max-width: 400px; border: 8px double #000; font-family: 'Do Hyeon', sans-serif;">
+            <!-- Background Image for Certificate -->
+            <div id="cert-bg-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opactiy: 0.2; z-index: 0; background-size: cover; background-position: center;"></div>
+            
+            <div style="position: relative; z-index: 10;">
+                <div class="mb-2" style="border-bottom: 2px solid #000; padding-bottom: 5px;">
+                    <h2 class="m-0 fw-bold" style="font-family: 'Black Han Sans', sans-serif; letter-spacing: -1px;">키보드 파괴 인증서</h2>
+                    <small class="text-muted text-uppercase">CERTIFICATE OF KEYBOARD DESTRUCTION</small>
+                </div>
+
+                <div class="my-4 text-start ps-2">
+                    <p class="mb-1 fw-bold fs-5">종목 (EVENT):</p>
+                    <h3 id="cert-title" class="mb-3 text-primary fw-bold" style="border-bottom: 1px dotted #999;">...</h3>
+                    
+                    <p class="mb-1 fw-bold fs-5">기록 (RECORD):</p>
+                    <div class="d-flex justify-content-between align-items-end mb-3" style="border-bottom: 1px dotted #999;">
+                        <span class="fs-4">LEVEL <span id="cert-level" class="text-danger fw-bold">0</span></span>
+                        <span class="fs-4"><span id="cert-score" class="text-danger fw-bold">0</span> 점</span>
+                    </div>
+
+                    <p class="mb-1 fw-bold fs-5">평가 (CONCLUSION):</p>
+                    <p id="cert-comment" class="fs-5 fw-bold fst-italic text-secondary" style="word-break: keep-all; line-height: 1.4;">...</p>
+                </div>
+
+                <div class="mt-4 pt-2 d-flex justify-content-between align-items-end" style="border-top: 2px solid #000;">
+                    <div class="text-start">
+                        <small class="d-block text-muted" id="cert-date">202X. XX. XX.</small>
+                        <span class="fw-bold">IDDQD 인터넷</span>
+                    </div>
+                    <!-- Stamp -->
+                    <div style="border: 3px solid #ff003c; color: #ff003c; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; transform: rotate(-15deg); font-weight: bold; border-style: double;">
+                        인증
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <button id="btn-restart" class="btn btn-arcade-red btn-lg px-5 mt-2 fw-bold">RETRY</button>
-        <button id="btn-home" class="btn btn-outline-light btn-sm mt-3">SELECT STAGE</button>
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap gap-2 justify-content-center" style="z-index: 3000;">
+            <button id="btn-save-img" class="btn btn-success fw-bold px-4">📸 이미지 저장</button>
+            <button id="btn-share" class="btn btn-primary fw-bold px-4">🔗 공유하기</button>
+        </div>
+        <div class="d-flex flex-wrap gap-2 justify-content-center mt-3" style="z-index: 3000;">
+            <button id="btn-restart" class="btn btn-danger fw-bold px-4">🔄 다시 도전</button>
+            <button id="btn-home" class="btn btn-outline-light px-4">🏠 스테이지 선택</button>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="packages.js?v=2"></script>
     <script src="game.js?v=2"></script>
 

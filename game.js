@@ -43,6 +43,15 @@ const Game = {
 
         this.$gameOverScreen = $('#game-over-screen');
         this.$stageName = $('#stage-name');
+
+        // Certificate Elements
+        this.$certTitle = $('#cert-title');
+        this.$certLevel = $('#cert-level');
+        this.$certScore = $('#cert-score');
+        this.$certComment = $('#cert-comment');
+        this.$certDate = $('#cert-date');
+        this.$certBg = $('#cert-bg-layer');
+        this.$certCard = $('#certificate-card');
     },
 
     renderStageList: function () {
@@ -118,6 +127,10 @@ const Game = {
         });
 
         $('#btn-bgm-toggle').off('click').on('click', () => this.toggleBGM());
+
+        // Certificate Actions
+        $('#btn-save-img').off('click').on('click', () => this.saveCertificate());
+        $('#btn-share').off('click').on('click', () => this.shareCertificate());
     },
 
     resize: function () {
@@ -591,17 +604,71 @@ const Game = {
         this.stopBGM(); // Stop BGM immediately
         $('#score-board').hide(); // Force Hide HUD
 
-        this.$finalScore.text(this.score.toLocaleString());
+        // --- Populate Certificate ---
+        this.$certTitle.text(this.currentPackage.title);
+        this.$certLevel.text(this.level);
+        this.$certScore.text(this.score.toLocaleString());
+        this.$certComment.html(this.generateConclusion(this.score, this.level));
 
-        let comment = "더 노력하십시오.";
-        if (this.score > 5000) comment = "훌륭한 키보드 워리어!";
-        if (this.score > 20000) comment = "당신은 이미 전설입니다.";
+        const now = new Date();
+        this.$certDate.text(`${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, '0')}. ${String(now.getDate()).padStart(2, '0')}.`);
 
-        this.$resultComment.text(comment);
+        // Set BG (dimmed)
+        this.$certBg.css({
+            'background-image': `url('${this.currentPackage.image}')`,
+            'opacity': '0.15' // Very light bg
+        });
+
         this.$gameOverScreen.removeClass('d-none').addClass('d-flex');
         $('footer').removeClass('d-none'); // Show footer
 
         this.playBeep(100, 'sawtooth', 1.0);
+    },
+
+    generateConclusion: function (score, level) {
+        if (score < 5000) return "독수리 타법 수준입니다.<br>연습이 더 필요합니다.";
+        if (score < 15000) return "일반적인 수준입니다.<br>조금 더 분발하세요.";
+        if (score < 30000) return "상당한 실력자입니다.<br>키보드가 아파합니다.";
+        if (score < 50000) return "놀라운 속도입니다!<br>프로게이머 수준입니다.";
+        return "전설적인 타자왕입니다!<br>키보드를 파괴하셨군요.";
+    },
+
+    saveCertificate: function () {
+        if (typeof html2canvas === 'undefined') {
+            alert('Image generator initializing...');
+            return;
+        }
+
+        // Temporarily remove border radius or shadow if needed for clean shot
+        html2canvas(this.$certCard[0], {
+            scale: 2, // High resolution
+            useCORS: true,
+            backgroundColor: null
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `keyboard_cert_${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    },
+
+    shareCertificate: function () {
+        const text = `[키보드 파괴 인증서]\n종목: ${this.currentPackage.title}\nLEVEL: ${this.level}\nSCORE: ${this.score.toLocaleString()}\n\n도전하기: https://game.iddqd.kr/public/typing/`;
+
+        if (navigator.share) {
+            navigator.share({
+                title: '실전 타자연습 인증서',
+                text: text,
+                url: 'https://game.iddqd.kr/public/typing/'
+            }).catch(console.error);
+        } else {
+            // Fallback: Copy to clipboard
+            navigator.clipboard.writeText(text).then(() => {
+                alert('결과 텍스트가 복사되었습니다!');
+            }).catch(() => {
+                alert('공유하기를 지원하지 않는 브라우저입니다.');
+            });
+        }
     }
 };
 
