@@ -14,9 +14,9 @@
 
 ## 📸 스크린샷
 
-| 스테이지 선택 | 게임 플레이 | 결과 인증서 |
+| 스테이지 선택 | 게임 플레이 1 | 게임 플레이 2 |
 |:---:|:---:|:---:|
-| ![Stage Select](./screenshots/1.png) | ![Gameplay](./screenshots/2.png) | ![Certificate](./screenshots/3.png) |
+| ![Stage Select](./screenshots/1.png) | ![Gameplay 1](./screenshots/2.png) | ![Gameplay 2](./screenshots/3.png) |
 
 ## 🕹️ 게임 모드
 
